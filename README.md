@@ -9,6 +9,8 @@
 
 This repository by [Dr. Ori Cohen](https://www.linkedin.com/in/cohenori/) extends the original [Neural Amp Modeler](https://github.com/sdatkinson/neural-amp-modeler) (created by Steven Atkinson) by adding support for modeling the entire range of an amp's controls through knob conditioning. While the original NAM allows modeling of guitar amps and effects at fixed settings, this enhanced version enables complete modeling of all amp control parameters.
 
+This project is a collaboration between [Dr. Ori Cohen](https://www.linkedin.com/in/cohenori/) and [Nir Hadar](https://www.linkedin.com/in/nirhadar/). The concept was originally proposed by Nir Hadar, and together we've worked to bring this enhancement to the NAM community.
+
 > **Important Note**: This implementation currently only works with WaveNet architecture due to its inherent support for conditioning. While efforts have been made to maintain backward compatibility with the original NAM plugin and models, this is not guaranteed for all features and configurations.
 
 ## What is Knob Conditioning?
