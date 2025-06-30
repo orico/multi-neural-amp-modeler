@@ -1,0 +1,62 @@
+{
+  "net": {
+    "name": "MultiKnob",
+    "config": {
+      "knob_config": {
+        "volume": {
+          "name": "Volume",
+          "min_value": 0.0,
+          "max_value": 1.0,
+          "default_value": 0.5,
+          "embedding_dim": 8
+        },
+        "gain": {
+          "name": "Gain",
+          "min_value": 0.0,
+          "max_value": 1.0,
+          "default_value": 0.5,
+          "embedding_dim": 8
+        },
+        "bass": {
+          "name": "Bass",
+          "min_value": 0.0,
+          "max_value": 1.0,
+          "default_value": 0.5,
+          "embedding_dim": 8
+        },
+        "mid": {
+          "name": "Mid",
+          "min_value": 0.0,
+          "max_value": 1.0,
+          "default_value": 0.5,
+          "embedding_dim": 8
+        },
+        "treble": {
+          "name": "Treble",
+          "min_value": 0.0,
+          "max_value": 1.0,
+          "default_value": 0.5,
+          "embedding_dim": 8
+        },
+        "presence": {
+          "name": "Presence",
+          "min_value": 0.0,
+          "max_value": 1.0,
+          "default_value": 0.5,
+          "embedding_dim": 8
+        }
+      },
+      "base_model": "WaveNet",
+      "sample_rate": 48000
+    }
+  },
+  "optimizer": {
+    "lr": 0.004
+  },
+  "lr_scheduler": {
+    "class": "ExponentialLR",
+    "kwargs": {
+      "gamma": 0.993
+    }
+  }
+} 

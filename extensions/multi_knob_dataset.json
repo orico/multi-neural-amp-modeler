@@ -1,0 +1,33 @@
+{
+  "type": "multi_knob",
+  "train": {
+    "x_path": "extensions/data/input_1.wav",
+    "y_path": "extensions/data/output_1.wav",
+    "knob_settings": {
+      "volume": 0.1,
+      "gain": null,
+      "bass": null,
+      "mid": null,
+      "treble": null,
+      "presence": null
+    },
+    "ny": 8192
+  },
+  "validation": {
+    "x_path": "extensions/data/input_6.wav",
+    "y_path": "extensions/data/output_6.wav",
+    "knob_settings": {
+      "volume": null,
+      "gain": null,
+      "bass": null,
+      "mid": null,
+      "treble": null,
+      "presence": 0.6
+    },
+    "ny": null
+  },
+  "common": {
+    "sample_rate": 48000,
+    "delay": 0
+  }
+} 
