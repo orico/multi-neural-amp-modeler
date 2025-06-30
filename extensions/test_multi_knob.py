@@ -5,7 +5,7 @@ import torch
 import numpy as np
 import os
 from nam.models.metadata import UserMetadata
-from extensions.multi_knob import (
+from multi_knob import (
     KnobMetadata,
     MultiKnobUserMetadata,
     MultiKnobDataset,
