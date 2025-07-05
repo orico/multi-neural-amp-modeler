@@ -170,7 +170,7 @@ def plot_comparison(di_info, di_data, drive_info, drive_data, output_dir):
     fig.write_html(output_file + '.html')
 
 # Get all wav files in the directory
-directory = "extensions/HRD III Drive channel modeling"
+directory = "extensions/multi_knob/data/HRD III Drive channel modeling"
 wav_files = sorted([f for f in Path(directory).glob("*.wav")])
 
 # Analyze all files and store audio data
@@ -211,7 +211,7 @@ di_file = next(r for r in results if r['filename'] == 'DI.wav')
 di_data = audio_data[di_file['filename']]
 
 # Create individual comparisons
-output_dir = 'wav_comparison'
+output_dir = 'extensions/multi_knob/wav_comparison'
 for info in results:
     if info['filename'] != 'DI.wav':
         drive_data = audio_data[info['filename']]

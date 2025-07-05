@@ -148,3 +148,5 @@ trained_models/
 
 # Mac OS
 .DS_Store
+
+*.html
