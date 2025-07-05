@@ -1,0 +1,55 @@
+{
+    "type": "multi_knob",
+    "train": [
+      {
+        "x_path": "extensions/multi_knob/data/HRD III Drive channel modeling/DI.wav",
+        "y_path": "extensions/multi_knob/data/HRD III Drive channel modeling/Drive 2 Master 6.padded.wav",
+        "knob_settings": {
+          "drive": 0.2,
+          "master": 0.6,
+          "volume": 0.2,
+          "treble": 0.85,
+          "bass": 1.0,
+          "middle": 0.85,
+          "reverb": 0.0,
+          "presence": 0.5
+        },
+        "ny": 8192
+      },
+      {
+        "x_path": "extensions/multi_knob/data/HRD III Drive channel modeling/DI.wav",
+        "y_path": "extensions/multi_knob/data/HRD III Drive channel modeling/Drive 3 Master 3.5.padded.wav",
+        "knob_settings": {
+          "drive": 0.3,
+          "master": 0.35,
+          "volume": 0.2,
+          "treble": 0.85,
+          "bass": 1.0,
+          "middle": 0.85,
+          "reverb": 0.0,
+          "presence": 0.5
+        },
+        "ny": 8192
+      }
+    ],
+    "validation": [
+      {
+        "x_path": "extensions/multi_knob/data/HRD III Drive channel modeling/DI.wav",
+        "y_path": "extensions/multi_knob/data/HRD III Drive channel modeling/Drive 12 Master 1.padded.wav",
+        "knob_settings": {
+          "drive": 1.2,
+          "master": 0.1,
+          "volume": 0.2,
+          "treble": 0.85,
+          "bass": 1.0,
+          "middle": 0.85,
+          "reverb": 0.0,
+          "presence": 0.5
+        },
+        "ny": 8192
+      }
+    ],
+    "common": {
+      "sample_rate": 44100
+    }
+  } 

@@ -1,3 +1,16 @@
+import sys
+import os
+
+sys.stderr.write("\nPYTHON PATH:\n")
+for path in sys.path:
+    sys.stderr.write(f"{path}\n")
+sys.stderr.write("\n")
+
+module_path = os.path.abspath(__file__)
+sys.stderr.write(f"MULTI-KNOB MODULE STARTING FROM: {module_path}\n")
+sys.stderr.write(f"CURRENT WORKING DIR: {os.getcwd()}\n")
+sys.stderr.flush()
+
 """
 Multi-knob extension for Neural Amp Modeler
 Enables training models with multiple knob parameters
@@ -7,7 +20,7 @@ from typing import Dict, Optional, Sequence, Tuple, Any, Union
 import torch
 import torch.nn as nn
 import numpy as np
-from nam.data import AbstractDataset, register_dataset_initializer
+from nam.data import AbstractDataset, register_dataset_initializer, wav_to_tensor
 from nam.models.base import BaseNet
 from nam.models._abc import ImportsWeights
 from nam.models.metadata import UserMetadata
@@ -15,6 +28,8 @@ from nam.models.wavenet import WaveNet
 from nam.train.lightning_module import LightningModule
 from pydantic import BaseModel
 
+print("\nMULTI-KNOB MODULE LOADED", flush=True)
+print("="*50, flush=True)
 
 # Metadata Extensions
 class KnobMetadata(BaseModel):
@@ -31,9 +46,97 @@ class MultiKnobUserMetadata(UserMetadata):
     knobs: Dict[str, KnobMetadata]
 
 
-# Dataset Implementation
+@register_dataset_initializer("multi_knob")
+def init_multi_knob_dataset(
+    x_path: str,
+    y_path: str,
+    knob_settings: Dict[str, float],
+    nx: int,
+    ny: Optional[int] = None,
+    delay: Optional[int] = 0,
+    **kwargs,
+) -> "MultiKnobDataset":
+    """Initialize a multi-knob dataset from files.
+    This is where we handle delay compensation - only once per file load.
+    Delay compensation is done by padding the shorter signal with zeros.
+    """
+    print("="*50, flush=True)
+    print("INITIALIZING DATASET", flush=True)
+    print(f"x_path: {x_path}", flush=True)
+    print(f"y_path: {y_path}", flush=True)
+    print("="*50, flush=True)
+    
+    # Load audio files
+    print("\nLoading input file...", flush=True)
+    x = torch.from_numpy(np.load(x_path) if x_path.endswith('.npy') else wav_to_tensor(x_path))
+    print("Loading output file...", flush=True)
+    y = torch.from_numpy(np.load(y_path) if y_path.endswith('.npy') else wav_to_tensor(y_path))
+    
+    print(f"\nFile lengths:", flush=True)
+    print(f"Input:  {len(x)} samples", flush=True)
+    print(f"Output: {len(y)} samples", flush=True)
+    print(f"Difference: {len(x) - len(y)} samples", flush=True)
+    print(f"Delay: {delay} samples", flush=True)
+    
+    # Apply delay compensation once here
+    if delay:
+        print(f"\nApplying delay compensation of {delay} samples", flush=True)
+        if delay > 0:
+            print(f"Input longer than output by {delay} samples", flush=True)
+            print(f"  Before compensation - Input: {len(x)}, Output: {len(y)}", flush=True)
+            # Input is longer than output by 'delay' samples
+            # Add zeros to the beginning of output to align with input
+            y = torch.cat([torch.zeros(delay), y])
+            print(f"  After compensation  - Input: {len(x)}, Output: {len(y)}", flush=True)
+        else:
+            print(f"Output longer than input by {-delay} samples", flush=True)
+            print(f"  Before compensation - Input: {len(x)}, Output: {len(y)}", flush=True)
+            # Output is longer than input by 'delay' samples
+            # Add zeros to the beginning of input to align with output
+            x = torch.cat([torch.zeros(-delay), x])
+            print(f"  After compensation  - Input: {len(x)}, Output: {len(y)}", flush=True)
+
+    # Verify lengths match after delay compensation
+    if len(x) != len(y):
+        raise ValueError(f"Length mismatch after delay compensation: input={len(x)}, output={len(y)}")
+
+    # Convert knob settings to tensors that match the audio length
+    print("\nProcessing knob settings:", flush=True)
+    knob_tensors = {}
+    for name, value in knob_settings.items():
+        knob_tensors[name] = torch.full((len(x),), value, dtype=torch.float32)
+        print(f"  {name}: value={value}, tensor_length={len(x)}", flush=True)
+
+    print(f"\nCreating dataset with:", flush=True)
+    print(f"  nx (receptive field): {nx}", flush=True)
+    print(f"  ny (output samples): {ny if ny is not None else 'None (will be calculated)'}", flush=True)
+    
+    return MultiKnobDataset(x, y, knob_tensors, nx, ny, **kwargs)
+
+
 class MultiKnobDataset(AbstractDataset):
-    """Dataset that handles both audio and knob parameter data"""
+    """Dataset that handles both audio and knob parameter data.
+
+    This dataset implementation supports delay compensation between input and output audio.
+    The delay parameter specifies the number of samples difference between input and output.
+    
+    Delay Implementation:
+    - If delay > 0: Input is longer than output by 'delay' samples
+      We trim 'delay' samples from the start of input and end of output
+    - If delay < 0: Output is longer than input by 'delay' samples
+      We trim '-delay' samples from the end of input and start of output
+      
+    Note: This implementation uses manual delay values rather than automatic detection.
+    The delay values should be determined beforehand (e.g., using analyze_wav.py) and 
+    specified in the dataset configuration file.
+    
+    Example delay calculation:
+    If input.wav is 210,477 samples and output.wav is 208,943 samples:
+    delay = 210,477 - 208,943 = 1,534 samples
+    This means the input is 1,534 samples longer, so we trim:
+    - 1,534 samples from the start of input
+    - 1,534 samples from the end of output
+    """
     
     def __init__(
         self,
@@ -43,41 +146,70 @@ class MultiKnobDataset(AbstractDataset):
         nx: int,  # Receptive field
         ny: Optional[int] = None,  # Output samples per datum
         sample_rate: Optional[float] = None,
-        delay: Optional[int] = 0,  # Common NAM parameter
         **kwargs  # Handle any other NAM parameters
     ):
         super().__init__()
-        self._x = x
-        self._y = y
-        self._knob_settings = knob_settings
+        print("\n=== MultiKnobDataset Initialization ===", flush=True)
+        
         self._nx = nx
         self._ny = ny if ny is not None else len(x) - nx + 1
         self._sample_rate = sample_rate
+        self._x = x
+        self._y = y
+        self._knob_settings = knob_settings
+
+        print(f"Dataset parameters:", flush=True)
+        print(f"  Input length: {len(x)}", flush=True)
+        print(f"  Output length: {len(y)}", flush=True)
+        print(f"  Receptive field (nx): {nx}", flush=True)
+        print(f"  Output samples per datum (ny): {self._ny}", flush=True)
+        print(f"  Sample rate: {sample_rate}", flush=True)
+        print("\nKnob settings:", flush=True)
+        for name, values in knob_settings.items():
+            print(f"  {name}: length={len(values)}", flush=True)
+
+        # Validate lengths
+        if len(self._x) != len(self._y):
+            raise ValueError(f"Length mismatch: input={len(self._x)}, output={len(self._y)}")
+
+    def __len__(self) -> int:
+        """Calculate number of segments in dataset"""
+        n = len(self._x)
+        single_pairs = n - self._nx + 1
+        segments = single_pairs // self._ny
         
-        # Apply delay if needed
-        if delay:
-            if delay > 0:
-                self._x = torch.cat([torch.zeros(delay), self._x])
-            else:
-                self._y = torch.cat([torch.zeros(-delay), self._y])
-        
-    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor, Dict[str, torch.Tensor]]:
+        print(f"\n=== Dataset Length Calculation ===", flush=True)
+        print(f"  Total samples (n): {n}", flush=True)
+        print(f"  Receptive field (nx): {self._nx}", flush=True)
+        print(f"  Samples per datum (ny): {self._ny}", flush=True)
+        print(f"  Single pairs (n - nx + 1): {single_pairs}", flush=True)
+        print(f"  Final segments (pairs // ny): {segments}", flush=True)
+        return segments
+
+    def __getitem__(self, idx: int) -> Tuple[Dict[str, torch.Tensor], torch.Tensor]:
         """Get input audio, output audio, and knob settings for a segment"""
         if idx >= len(self):
+            print(f"\nERROR: Index {idx} out of range for dataset of length {len(self)}", flush=True)
             raise IndexError(f"Index {idx} out of range for dataset of length {len(self)}")
             
         i = idx * self._ny
         j = i + self._nx - 1
         x_segment = self._x[i:i + self._nx + self._ny - 1]
         y_segment = self._y[j:j + self._ny]
-        knob_segment = {k: v[i:i + self._nx + self._ny - 1] for k, v in self._knob_settings.items()}
-        return x_segment, knob_segment, y_segment  # Return y_segment last
-
-    def __len__(self) -> int:
-        """Calculate number of segments in dataset"""
-        n = len(self._x)
-        single_pairs = n - self._nx + 1
-        return single_pairs // self._ny
+        
+        print(f"\n=== Getting Dataset Item {idx} ===", flush=True)
+        print(f"  Start index i: {i}", flush=True)
+        print(f"  End index j: {j}", flush=True)
+        print(f"  Input segment shape: {x_segment.shape}", flush=True)
+        print(f"  Output segment shape: {y_segment.shape}", flush=True)
+        
+        # Get knob values - use same index for all knobs
+        knob_values = {name: values[i] for name, values in self._knob_settings.items()}
+        
+        # Combine audio and knob inputs
+        inputs = {"audio": x_segment, **knob_values}
+        
+        return inputs, y_segment
 
     @property
     def sample_rate(self) -> Optional[float]:
@@ -155,7 +287,6 @@ class MultiKnobDataset(AbstractDataset):
             "nx": nx,
             "ny": config.pop("ny", None),
             "sample_rate": sample_rate,
-            "delay": config.pop("delay", 0),  # Include delay parameter
             **config  # Pass through any remaining parameters
         }
 

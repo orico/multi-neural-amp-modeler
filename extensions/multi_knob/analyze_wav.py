@@ -27,6 +27,16 @@ def read_wav(filepath):
         
         return info, audio_data
 
+def save_wav(filepath, audio_data, sample_rate=44100, channels=1):
+    # Convert float audio data back to int16
+    audio_data = np.clip(audio_data * 32768.0, -32768, 32767).astype(np.int16)
+    
+    with wave.open(filepath, 'wb') as wav:
+        wav.setnchannels(channels)
+        wav.setsampwidth(2)  # 16-bit audio
+        wav.setframerate(sample_rate)
+        wav.writeframes(audio_data.tobytes())
+
 def plot_comparison(di_info, di_data, drive_info, drive_data, output_dir):
     # Calculate sample difference
     sample_diff = len(di_data) - len(drive_data)
@@ -209,9 +219,39 @@ for r in results:
 # Get DI file info and data
 di_file = next(r for r in results if r['filename'] == 'DI.wav')
 di_data = audio_data[di_file['filename']]
+di_length = len(di_data)
+
+# Pad and save files
+print("\nPadding and saving files...")
+for info in results:
+    if info['filename'] != 'DI.wav':
+        drive_data = audio_data[info['filename']]
+        sample_diff = di_length - len(drive_data)
+        
+        if sample_diff > 0:
+            # Pad the beginning of the drive data
+            padded_drive = np.pad(drive_data, (sample_diff, 0))
+            
+            # Create new filename
+            original_name = info['filename'].replace('.wav', '')
+            new_filename = os.path.join(directory, f"{original_name}.padded.wav")
+            
+            # Save padded file
+            save_wav(new_filename, padded_drive, info['frame_rate'], info['channels'])
+            
+            # Validate length
+            new_info, new_data = read_wav(new_filename)
+            if len(new_data) == di_length:
+                print(f"✓ {os.path.basename(new_filename)}: Successfully padded and validated")
+                ms_diff = (len(new_data) - di_length) / info['frame_rate'] * 1000
+                print(f"  Length difference with DI: {len(new_data) - di_length} samples ({ms_diff:.2f}ms)")
+            else:
+                print(f"✗ {os.path.basename(new_filename)}: Length mismatch!")
+                print(f"  Expected {di_length} samples, got {len(new_data)} samples")
 
 # Create individual comparisons
 output_dir = 'extensions/multi_knob/wav_comparison'
+os.makedirs(output_dir, exist_ok=True)
 for info in results:
     if info['filename'] != 'DI.wav':
         drive_data = audio_data[info['filename']]
