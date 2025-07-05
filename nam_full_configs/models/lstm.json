@@ -1,0 +1,41 @@
+{
+    "_comments": [
+        "Reminders and tips:",
+        " * For your data, use a long ny like 32768.",
+        " * For this model, it really helps if you have the delay in your data set",
+        "   correctly. I've seen improvements fixing a delay that was off by 10",
+        "   samples.",
+        " * gamma below is picked so that we end up with a learning rate of about",
+        "   1e-4 after 1000 epochs. I've found LSTMs to work with a pretty aggressive",
+        "   learning rate that would be out of the question for other architectures.",
+        " * Number of units between 8 and 96, layers from 1 to 5 all seem to be ok",
+        "   depending on the dataset, though bigger models might not make real-time.",
+        "",
+        "Dev note: Ensure that tests/test_bin/test_train/test_main.py's data is ",
+        "representative of this!"
+    ],
+    "net": {
+        "name": "LSTM",
+        "config": {
+            "num_layers": 3,
+            "hidden_size": 18,
+            "train_burn_in": 8192,
+            "train_truncate": null
+        }
+    },
+    "loss": {
+        "val_loss": "esr",
+        "mask_first": 8192,
+        "pre_emph_mrstft_weight": 0.002,
+        "pre_emph_mrstft_coef": 0.85
+    },
+    "optimizer": {
+        "lr": 0.008
+    },
+    "lr_scheduler": {
+        "class": "ExponentialLR",
+        "kwargs": {
+            "gamma": 0.995
+        }
+    }
+}

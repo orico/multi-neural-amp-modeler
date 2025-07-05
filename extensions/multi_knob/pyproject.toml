@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neural-amp-modeler"
+description = "Neural Amp Modeler"
+authors = [
+    {name = "Steven Atkinson", email = "steven@atkinson.mn"},
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+dependencies = [
+    "auraloss @ git+https://github.com/Atkinson-Advanced-Modeling/auraloss.git@4c45a90",
+    "matplotlib",
+    "numpy",
+    "pydantic>=2.0.0",
+    "pytorch_lightning",
+    "sounddevice",
+    "tensorboard",
+    "torch==2.2.2",
+    # `transformers` is not required, but if you have it, it needs to be recent
+    # enough so I'm adding it.
+    "transformers>=4",
+    "tqdm",
+    "wavio>=0.0.5",
+    "plotly",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+# Optional features
+transformers-compat = [
+    "transformers>=4",  # Issue-294
+    "numpy",  # NB: Older PyTorch versions require numpy<2
+]
+
+test = [
+    "pytest",
+    "pytest-mock",
+    "requests",
+]
+
+[project.urls]
+homepage = "https://github.com/sdatkinson/"
+
+[project.scripts]
+nam = "nam.cli:nam_gui"
+nam-full = "nam.cli:nam_full"
+nam-hello-world = "nam.cli:nam_hello_world"
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+write_to = "nam/_version.py"
+
+[tool.setuptools]
+packages = ["nam", "nam.train", "nam.train.gui", "nam.train.gui._resources", "nam.models", "nam.models._resources" ]
