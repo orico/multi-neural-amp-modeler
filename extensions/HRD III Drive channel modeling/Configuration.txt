@@ -1,0 +1,18 @@
+Recording infromation:
+Microphone: Behringer C-2 small diaphragm condenser microphone
+Guitar: Schecter Nick Johnston Traditional (Neck & Middle position)
+Amp configurations:
+	Input: 2 (Low input)
+	Channel: Drive 1
+	Volume: 2
+	Treble: 8.5
+	Bass: 10
+	Middle: 8.5
+	Reverb: 0
+	Presence: 5
+
+Recording done on a loop station pedal throughout the various settings (including Direct In recording)
+
+FYI: 
+	1. With Drive at 1 I got no volume (it's the minimal setting), so recording starts at 2.
+	2. I had to ajust the master volume for unity between the various drive levels, those changes 	are indicated in the file names.

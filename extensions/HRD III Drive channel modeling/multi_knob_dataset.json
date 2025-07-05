@@ -1,0 +1,176 @@
+{
+  "type": "multi_knob",
+  "train": [
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 2 Master 6.wav",
+      "knob_settings": {
+        "drive": 0.2,
+        "master": 0.6,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    },
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 3 Master 3.5.wav",
+      "knob_settings": {
+        "drive": 0.3,
+        "master": 0.35,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    },
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 4 Master 3.wav",
+      "knob_settings": {
+        "drive": 0.4,
+        "master": 0.3,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    },
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 5 Master 2.5.wav",
+      "knob_settings": {
+        "drive": 0.5,
+        "master": 0.25,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    },
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 6 Master 2.wav",
+      "knob_settings": {
+        "drive": 0.6,
+        "master": 0.2,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    },
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 7 Master 2.wav",
+      "knob_settings": {
+        "drive": 0.7,
+        "master": 0.2,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    },
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 8 Master 2.wav",
+      "knob_settings": {
+        "drive": 0.8,
+        "master": 0.2,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    },
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 9 Master 1.wav",
+      "knob_settings": {
+        "drive": 0.9,
+        "master": 0.1,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    },
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 10 Master 1.wav",
+      "knob_settings": {
+        "drive": 1.0,
+        "master": 0.1,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    },
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 11 Master 1.wav",
+      "knob_settings": {
+        "drive": 1.1,
+        "master": 0.1,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    }
+  ],
+  "validation": [
+    {
+      "x_path": "extensions/HRD III Drive channel modeling/DI.wav",
+      "y_path": "extensions/HRD III Drive channel modeling/Drive 12 Master 1.wav",
+      "knob_settings": {
+        "drive": 1.2,
+        "master": 0.1,
+        "volume": 0.2,
+        "treble": 0.85,
+        "bass": 1.0,
+        "middle": 0.85,
+        "reverb": 0.0,
+        "presence": 0.5
+      },
+      "ny": 8192
+    }
+  ],
+  "common": {
+    "sample_rate": 44100,
+    "delay": 0
+  }
+} 

@@ -11,10 +11,9 @@ from nam.data import AbstractDataset, register_dataset_initializer
 from nam.models.base import BaseNet
 from nam.models._abc import ImportsWeights
 from nam.models.metadata import UserMetadata
-from nam.models.wavenet import WaveNet, _Layer, Conv1d
-from pydantic import BaseModel
+from nam.models.wavenet import WaveNet
 from nam.train.lightning_module import LightningModule
-import inspect
+from pydantic import BaseModel
 
 
 # Metadata Extensions

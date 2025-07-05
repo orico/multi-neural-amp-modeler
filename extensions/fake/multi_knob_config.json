@@ -1,0 +1,76 @@
+{
+  "net": {
+    "name": "MultiKnob",
+    "config": {
+      "knob_config": {
+        "drive": {
+          "name": "Drive",
+          "min_value": 1.0,
+          "max_value": 12.0,
+          "default_value": 6.5,
+          "embedding_dim": 8
+        },
+        "master": {
+          "name": "Master",
+          "min_value": 1.0,
+          "max_value": 12.0,
+          "default_value": 6.5,
+          "embedding_dim": 8
+        },
+        "volume": {
+          "name": "Volume",
+          "min_value": 1.0,
+          "max_value": 12.0,
+          "default_value": 6.5,
+          "embedding_dim": 8
+        },
+        "treble": {
+          "name": "Treble",
+          "min_value": 1.0,
+          "max_value": 12.0,
+          "default_value": 6.5,
+          "embedding_dim": 8
+        },
+        "bass": {
+          "name": "Bass",
+          "min_value": 1.0,
+          "max_value": 12.0,
+          "default_value": 6.5,
+          "embedding_dim": 8
+        },
+        "middle": {
+          "name": "Middle",
+          "min_value": 1.0,
+          "max_value": 12.0,
+          "default_value": 6.5,
+          "embedding_dim": 8
+        },
+        "reverb": {
+          "name": "Reverb",
+          "min_value": 1.0,
+          "max_value": 12.0,
+          "default_value": 6.5,
+          "embedding_dim": 8
+        },
+        "presence": {
+          "name": "Presence",
+          "min_value": 1.0,
+          "max_value": 12.0,
+          "default_value": 6.5,
+          "embedding_dim": 8
+        }
+      },
+      "base_model": "WaveNet",
+      "sample_rate": 48000
+    }
+  },
+  "optimizer": {
+    "lr": 0.004
+  },
+  "lr_scheduler": {
+    "class": "ExponentialLR",
+    "kwargs": {
+      "gamma": 0.993
+    }
+  }
+} 

@@ -1,0 +1,70 @@
+1. def parse_config(cls, config): - violates some design principles:
+@classmethod
+def load_audio_data(cls, x_path: str, y_path: str, sample_rate: Optional[float] = None) -> Tuple[torch.Tensor, torch.Tensor]:
+    """Load audio data from files"""
+    from nam.data import wav_to_tensor
+    x = wav_to_tensor(x_path, rate=sample_rate)
+    y = wav_to_tensor(y_path, rate=sample_rate)
+    return x, y
+
+@classmethod
+def parse_config(cls, config):
+    """Parse configuration only"""
+    sample_rate = config.pop("sample_rate", None)
+    x_path = config.pop("x_path")
+    y_path = config.pop("y_path")
+    
+    # Load audio using separate method
+    x, y = cls.load_audio_data(x_path, y_path, sample_rate)
+
+2. Delay Parameter Design - should use NAM's automatic delay detection
+class AudioDelay(BaseModel):
+    """Model for audio delay configuration"""
+    value: int
+    unit: str = "samples"  # or "ms" if we want to support different units
+    auto_detect: bool = False
+    max_search_range: Optional[int] = None
+
+    @validator('value')
+    def validate_delay(cls, v):
+        if abs(v) > MAX_ALLOWED_DELAY:
+            raise ValueError(f"Delay value {v} exceeds maximum allowed delay of {MAX_ALLOWED_DELAY}")
+        return v
+
+class MultiKnobDataset(AbstractDataset):
+    def __init__(
+        self,
+        x: torch.Tensor,
+        y: torch.Tensor,
+        knob_settings: Dict[str, torch.Tensor],
+        nx: int,
+        ny: Optional[int] = None,
+        sample_rate: Optional[float] = None,
+        delay_config: Optional[AudioDelay] = None,
+        **kwargs
+    ):
+        super().__init__()
+        self._x = x
+        self._y = y
+        
+        if delay_config:
+            if delay_config.auto_detect:
+                delay = self._detect_optimal_delay(
+                    max_range=delay_config.max_search_range
+                )
+            else:
+                delay = delay_config.value
+                
+            self._apply_delay(delay)
+
+The delay configuration could then be specified in the config file:
+{
+  "common": {
+    "sample_rate": 48000,
+    "delay": {
+      "value": 0,
+      "auto_detect": true,
+      "max_search_range": 1000
+    }
+  }
+}
