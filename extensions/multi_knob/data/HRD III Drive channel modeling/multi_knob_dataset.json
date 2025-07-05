@@ -171,6 +171,7 @@
   ],
   "common": {
     "sample_rate": 44100,
-    "delay": 0
+    "delay": 0,
+    "trim_end": 208943
   }
 } 

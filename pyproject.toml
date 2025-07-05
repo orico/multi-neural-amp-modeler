@@ -25,6 +25,7 @@ dependencies = [
     "transformers>=4",
     "tqdm",
     "wavio>=0.0.5",
+    "plotly",
 ]
 dynamic = ["version"]
 
